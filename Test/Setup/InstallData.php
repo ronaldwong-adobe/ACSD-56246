@@ -3,6 +3,7 @@
 
 namespace Adobe\Test\Setup;
 
+use Magento\Catalog\Api\Data\ProductAttributeInterface;
 use Magento\Framework\Setup\InstallDataInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
@@ -37,10 +38,10 @@ class InstallData implements InstallDataInterface
      */
     public function install(ModuleDataSetupInterface $setup, ModuleContextInterface $context)
     {
-        //customer attribute
-        $customerSetup = $this->customerSetupFactory->create(['setup' => $setup]);
+        //product attribute
+        $productSetup = $this->eavSetupFactory->create(['setup' => $setup]);
 
-        $customerSetup->addAttribute(\Magento\Customer\Model\Customer::ENTITY, 'customer_program', [
+        $productSetup->addAttribute(ProductAttributeInterface::ENTITY_TYPE_CODE, 'customer_program', [
             'type' => 'varchar',
             'label' => 'Program',
             'input' => 'multiselect',
@@ -51,12 +52,5 @@ class InstallData implements InstallDataInterface
             'system' => false,
             'backend' => 'Magento\Eav\Model\Entity\Attribute\Backend\ArrayBackend'
         ]);
-
-        $attribute = $customerSetup->getEavConfig()->getAttribute('customer', 'customer_program')
-            ->addData(['used_in_forms' => [
-                'adminhtml_customer'
-            ]
-            ]);
-        $attribute->save();
     }
 }
